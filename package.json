@@ -1,0 +1,31 @@
+{
+  "name": "passport-login-system",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000P\u0000a\u0000s\u0000s\u0000p\u0000o\u0000r\u0000t\u0000-\u0000L\u0000o\u0000g\u0000i\u0000n\u0000-\u0000S\u0000y\u0000s\u0000t\u0000e\u0000m\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "devStart": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Avayabhay/Passport-Login-System.git"
+  },
+  "author": "Abhay Sharma",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Avayabhay/Passport-Login-System/issues"
+  },
+  "homepage": "https://github.com/Avayabhay/Passport-Login-System#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "express-flash": "0.0.2",
+    "express-session": "^1.17.2"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.1",
+    "nodemon": "^2.0.16"
+  }
+}
