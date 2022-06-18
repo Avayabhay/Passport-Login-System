@@ -1,6 +1,8 @@
 <h1>Login</h1>
-
-<form action="/login" method="POST">
+<% if(messages.error) { %>
+<% messages.error %>
+<% } %>
+<form action="/login" method="post">
 
 
     <div class="email">
