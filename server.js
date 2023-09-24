@@ -8,8 +8,9 @@ const mongoURI = "mongodb://0.0.0.0:27017/mySession";
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const UserModel = require("./model/User");
 
-// const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 // const passport = require("passport");
 // const flash = require("express-flash");
 const session = require("express-session");
@@ -50,7 +51,7 @@ store.on("error", function (error) {
 // );
 
 // app.set("view-engin", "ejs");
-// app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }));
 // app.use(flash());
 app.use(
   session({
@@ -58,7 +59,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 20 * 1000,
+      maxAge: 60 * 60 * 24 * 1000,
     },
     store: store,
   })
@@ -73,31 +74,52 @@ app.get("/", (req, res) => {
   // res.render("index.ejs", { name: req.user.name });
 });
 
-// app.get("/login", (req, res) => {
-//   res.render("login.ejs");
-// });
+app.get("/login", (req, res) => {
+  res.render("login.ejs");
+});
 
-// app.get("/register", (req, res) => {
-//   res.render("register.ejs");
-// });
+app.get("/register", (req, res) => {
+  res.render("register.ejs");
+});
 
-// app.post("/register", async (req, res) => {
-//   try {
-//     const hashedPass = await bcrypt.hash(req.body.pass, 10);
-//     console.log(hashedPass);
-//     users.push({
-//       id: Date.now().toString(),
-//       name: req.body.name,
-//       email: req.body.email,
-//       pass: hashedPass,
-//     });
-//     console.log(users);
-//     res.redirect("/login");
-//   } catch {
-//     res.redirect("/register");
-//   }
-//   // console.log(user);
-// });
+app.post("/register", async (req, res) => {
+  try {
+    const { name, email, pass } = req.body;
+    // console.log(email, pass);
+
+    var user = await UserModel.findOne({ email });
+    console.log(user);
+    if (user) {
+      res.redirect("/register");
+    }
+    console.log("after red 1");
+    const hashedPass = await bcrypt.hash(pass, 10);
+    console.log("after hashedPass");
+
+    user = new UserModel({
+      name,
+      email,
+      pass: hashedPass,
+    });
+    console.log(user);
+    await user.save();
+    // console.log(hashedPass);
+    // users.push({
+    //   id: Date.now().toString(),
+    //   name: req.body.name,
+    //   email: req.body.email,
+    //   pass: hashedPass,
+    // });
+    // console.log(users);
+    // res.redirect("/login");
+    console.log("Saved");
+    await res.send("created successfully!!");
+  } catch (err) {
+    console.log(err);
+    res.redirect("/register");
+  }
+  // console.log(user);
+});
 
 // app.post(
 //   "/login",
