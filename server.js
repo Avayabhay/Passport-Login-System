@@ -64,11 +64,17 @@ app.use(
     store: store,
   })
 );
-// app.use(passport.initialize());
-// app.use(passport.session());
+
+//Middleware for accessing dashboard based on authorization
+const Authorize = (req, res, next) => {
+  if (req.session.isAuth) {
+    next();
+  } else {
+    res.send("Access is restricted!!");
+  }
+};
 
 app.get("/", (req, res) => {
-  req.session.isAuth = true;
   console.log(req.session);
   res.send("Passport Login System  !");
   // res.render("index.ejs", { name: req.user.name });
@@ -103,16 +109,7 @@ app.post("/register", async (req, res) => {
     });
     console.log(user);
     await user.save();
-    // console.log(hashedPass);
-    // users.push({
-    //   id: Date.now().toString(),
-    //   name: req.body.name,
-    //   email: req.body.email,
-    //   pass: hashedPass,
-    // });
-    // console.log(users);
-    // res.redirect("/login");
-    console.log("Saved");
+    //console.log("Saved");
     await res.redirect("/login");
   } catch (err) {
     console.log(err);
@@ -136,6 +133,7 @@ app.post(
       return res.send("incorrect password");
     }
 
+    req.session.isAuth = true;
     res.send("Login successfully!!");
   }
   // passport.authenticate("local", {
@@ -144,4 +142,11 @@ app.post(
   //   failureFlash: true,
   // })
 );
+
+//Dashboard
+app.get("/dashboard", Authorize, (req, res) => {
+  res.send(
+    "<h1> Hi, this page is can only be accessed only to authorized users</h1>"
+  );
+});
 app.listen(3000);
