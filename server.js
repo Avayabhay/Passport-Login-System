@@ -113,7 +113,7 @@ app.post("/register", async (req, res) => {
     // console.log(users);
     // res.redirect("/login");
     console.log("Saved");
-    await res.send("created successfully!!");
+    await res.redirect("/login");
   } catch (err) {
     console.log(err);
     res.redirect("/register");
@@ -121,12 +121,27 @@ app.post("/register", async (req, res) => {
   // console.log(user);
 });
 
-// app.post(
-//   "/login",
-//   passport.authenticate("local", {
-//     successRedirect: "/",
-//     failureRedirect: "/login",
-//     failureFlash: true,
-//   })
-// );
+app.post(
+  "/login",
+  async (req, res) => {
+    const { email, pass } = req.body;
+
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      res.send("User doesnot exists!");
+    }
+
+    const isMatch = await bcrypt.compare(pass, user.pass);
+    if (!isMatch) {
+      return res.send("incorrect password");
+    }
+
+    res.send("Login successfully!!");
+  }
+  // passport.authenticate("local", {
+  //   successRedirect: "/",
+  //   failureRedirect: "/login",
+  //   failureFlash: true,
+  // })
+);
 app.listen(3000);
